@@ -8,9 +8,10 @@
 #SBATCH --cpus-per-task=8
 #SBATCH --mem-per-cpu=1000
 #SBATCH --time=00:10:00
-#SBATCH --output="joblogs/slurm-%A_%a.out"
+#SBATCH --output=".results/slurm-%A_%a.out"
 
 python3.9 -m venv .env
 source .env/bin/activate
 pip install --upgrade pip
 pip install -r requirements.txt
+python semiscan.py data/ucsd-nt.1660438800.pcap .results
