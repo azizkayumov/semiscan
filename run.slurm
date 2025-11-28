@@ -1,0 +1,16 @@
+#!/bin/bash -e
+#SBATCH --job-name=semiscan
+#SBATCH --partition=debug
+#SBATCH --account=akayumov
+#SBATCH --nodes=1
+#SBATCH --ntasks=1
+#SBATCH --ntasks-per-node=1
+#SBATCH --cpus-per-task=8
+#SBATCH --mem-per-cpu=1000
+#SBATCH --time=00:10:00
+#SBATCH --output="joblogs/slurm-%A_%a.out"
+
+python3.9 -m venv .env
+source .env/bin/activate
+pip install --upgrade pip
+pip install -r requirements.txt
