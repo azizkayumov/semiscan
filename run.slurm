@@ -1,7 +1,7 @@
 #!/bin/bash -e
 #SBATCH --job-name=semiscan
 #SBATCH --partition=debug
-#SBATCH --account=akayumov
+#SBATCH --account=sds193
 #SBATCH --nodes=1
 #SBATCH --ntasks=1
 #SBATCH --ntasks-per-node=1
