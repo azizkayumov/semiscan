@@ -11,8 +11,10 @@
 #SBATCH --export=ALL
 #SBATCH -t 01:00:00
 
+gzip -d $1 > $2
+
 python3.9 -m venv .env
 source .env/bin/activate
 pip install --upgrade pip
 pip install -r requirements.txt
-python -W ignore semiscan.py $1 $2
+python -W ignore semiscan.py $2 $3
