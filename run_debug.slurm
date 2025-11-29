@@ -10,7 +10,7 @@
 #SBATCH --time=00:10:00
 #SBATCH --output=".results/semiscan-%A_%a.out"
 
-gzip -d $1 > $2
+gzip -d $1 > $2 || true
 
 python3.9 -m venv .env
 source .env/bin/activate

@@ -48,6 +48,7 @@ def deduplicate(vectors_path, output_path):
                 continue
             seen.add(vector)
             outfile.write(f'{label},{vector}\n')
+    print(f'      number of unique vectors: {len(seen)}')
     print(f'      deduplicated vectors saved at {output_path}')
     outfile.close()
     
