@@ -8,7 +8,9 @@
 #SBATCH --cpus-per-task=8
 #SBATCH --mem-per-cpu=1000
 #SBATCH --time=00:10:00
-#SBATCH --output=".results/semiscan-%A_%a.out"
+#SBATCH --output=".results/joblogs/semiscan-%A_%a.out"
+#SBATCH --mail-user=kayumovabduaziz@gmail.com
+#SBATCH --mail-type=END,FAIL,TIME_LIMIT_80
 
 gzip -dfc $1 > $2
 

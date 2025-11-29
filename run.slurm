@@ -1,7 +1,7 @@
 #!/bin/bash -e
 #SBATCH --account=sds193
 #SBATCH --job-name="semiscan"
-#SBATCH --output=".results/semiscan.%j.%N.out"
+#SBATCH --output=".results/joblogs/semiscan-%A_%a.out"
 #SBATCH --partition=compute
 #SBATCH --nodes=1
 #SBATCH --ntasks=1
@@ -10,6 +10,8 @@
 #SBATCH --mem=0
 #SBATCH --export=ALL
 #SBATCH -t 01:00:00
+#SBATCH --mail-user=kayumovabduaziz@gmail.com
+#SBATCH --mail-type=END,FAIL,TIME_LIMIT_80
 
 gzip -dfc $1 > $2
 
