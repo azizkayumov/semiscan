@@ -1,9 +1,12 @@
 import os
 import sys
-from pcap_to_ports import process_packets
 from embedding import train_word2vec_model, scanner_to_vectors
-from preprocess import deduplicate
+from preprocess import deduplicate, pcap_to_csv, csv_to_ports
 from clustering import cluster_data
+import warnings
+
+# Ignore all warnings
+warnings.filterwarnings("ignore")
 
 # get argument from command line
 # python semiscan.py <dataset_path> <output_folder>
@@ -22,8 +25,11 @@ if not os.path.exists(dataset_path):
 if not os.path.exists(output_folder):
     os.makedirs(output_folder)
 
+# preprocess dataset
+csv_path = os.path.join(output_folder, f'{dataset_name}.csv')
+pcap_to_csv(dataset_path, csv_path)
 ports_path = os.path.join(output_folder, f'{dataset_name}.ports')
-process_packets(dataset_path, ports_path)
+csv_to_ports(csv_path, ports_path)
 
 # train word2vec model
 train_word2vec_model(ports_path, "")

@@ -1,3 +1,4 @@
 .data
 .env
 .results
+.DS_Store

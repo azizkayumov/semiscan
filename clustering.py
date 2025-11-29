@@ -5,6 +5,9 @@ from fast_hdbscan import HDBSCAN
 
 
 def cluster_data(datapath):
+    print(f'\n   => clustering data: {datapath}')
+
+    # load data
     X = np.genfromtxt(datapath, delimiter=",", dtype=str)
     partial_labels = X[:, 0]
     data_points = X[:, 1:].astype(float)
@@ -18,7 +21,7 @@ def cluster_data(datapath):
         partial_labels[idx] = class_map[label]
     partial_labels = partial_labels.astype(int)
     partial_labeled_count = np.sum(partial_labels != -1)
-    print(f'   => number of partially labeled samples: {partial_labeled_count} / {len(partial_labels)}')
+    print(f'      number of partially labeled samples: {partial_labeled_count} / {len(partial_labels)}')
 
     # clustering
     min_samples = 3
@@ -31,12 +34,12 @@ def cluster_data(datapath):
     )
     clusterer.fit(data_points, y=partial_labels)
     cluster_labels = clusterer.labels_
-    print("   => number of clusters: ", len(set(cluster_labels)))
+    print(f"      number of clusters: {len(set(cluster_labels))}")
 
     # Save results
     output_path = datapath.replace('.dedup', '.clusters')
     np.savetxt(output_path, cluster_labels, fmt="%d", delimiter=",")
-    print(f"   => cluster labels saved to {output_path}")
+    print(f"      cluster labels saved to {output_path}")
 
     cluster_map = {}
     for (i, vector) in enumerate(data_points):
@@ -59,5 +62,5 @@ def cluster_data(datapath):
             os.makedirs(os.path.dirname(cluster_file_path), exist_ok=True)
             with open(cluster_file_path, 'a') as cf:
                 cf.write(f'{ipsrc},{label}\n')
-    print(f'   => cluster files saved to {os.path.join(folder, "clusters/")}')
+    print(f'      cluster files saved to {os.path.join(folder, "clusters/")}')
 

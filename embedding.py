@@ -24,26 +24,27 @@ class MyCorpus:
 
 def train_word2vec_model(ports_path, trained_model_path=""):
     sentences = MyCorpus(ports_path)
+    print(f'\n   => training w2v model on {ports_path}...')
 
     # Create the Word2Vec model (if it exists, load it)
     if os.path.exists(trained_model_path):
-        print(f'   => loading model from {trained_model_path}...')
+        print(f'      loading model from {trained_model_path}...')
         model = Word2Vec.load(trained_model_path)
         model.build_vocab(sentences, update=True)
     else:
-        print('   => creating a new w2v model...')
+        print('      creating a new w2v model...')
         model = Word2Vec(vector_size=24, window=5, min_count=1, workers=4)
         model.build_vocab(sentences)
 
     # Train the model
-    print("   => training the model...")
+    print("      training the model...")
     model.train(sentences, total_examples=model.corpus_count, epochs=10)
 
     # Save the model
     model_path = ports_path.replace('.ports', '.model')
     os.makedirs(os.path.dirname(model_path), exist_ok=True)
     model.save(model_path)
-    print(f'   => model saved at {model_path}')
+    print(f'      model saved at {model_path}')
 
     # Save the keys
     keys = model.wv.key_to_index
@@ -56,11 +57,12 @@ def train_word2vec_model(ports_path, trained_model_path=""):
             vector = np.round(vec, 6)
             row = f'{key},' + ','.join([str(v) for v in vector])
             f.write(f'{row}\n')
-    print(f'   => keys saved at {keys_path}')
+    print(f'      keys saved at {keys_path}')
 
 def scanner_to_vectors(ports_path, keys_path, labels_folder, output_path):
     port_to_vectors = load_keys(keys_path)
     scanner_labels = load_labels(labels_folder)
+    print(f'      converting scanners to vectors: {ports_path}')
 
     outfile = open(output_path, 'w')
     with open(ports_path, 'r') as f:
@@ -78,6 +80,8 @@ def scanner_to_vectors(ports_path, keys_path, labels_folder, output_path):
             vector = np.round(vector, 6)
             vectors_str = ','.join(map(str, vector))
             outfile.write(f'{ip_src_32},{label},{vectors_str}\n')
+
+    print(f'      scanner vectors saved at {output_path}')
     outfile.close()
 
 def load_keys(keys_path):
@@ -100,5 +104,5 @@ def load_labels(labels_folder):
             for line in f:
                 ipsrc = line.strip()
                 labels[ipsrc] = label
-    print(f'   => loaded {len(labels)} labeled scanners')
+    print(f'      loaded {len(labels)} labeled scanners')
     return labels

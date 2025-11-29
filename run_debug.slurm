@@ -1,15 +1,14 @@
 #!/bin/bash -e
-#SBATCH --account=sds193
 #SBATCH --job-name="semiscan"
-#SBATCH --output=".results/semiscan.%j.%N.out"
-#SBATCH --partition=compute
+#SBATCH --partition=debug
+#SBATCH --account=sds193
 #SBATCH --nodes=1
 #SBATCH --ntasks=1
 #SBATCH --ntasks-per-node=1
-#SBATCH --cpus-per-task=128
-#SBATCH --mem=0
-#SBATCH --export=ALL
-#SBATCH -t 01:00:00
+#SBATCH --cpus-per-task=8
+#SBATCH --mem-per-cpu=1000
+#SBATCH --time=00:10:00
+#SBATCH --output=".results/semiscan-%A_%a.out"
 
 python3.9 -m venv .env
 source .env/bin/activate
