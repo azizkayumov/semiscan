@@ -13,10 +13,15 @@
 #SBATCH --mail-user=kayumovabduaziz@gmail.com
 #SBATCH --mail-type=END,FAIL,TIME_LIMIT_80
 
-gzip -dfc $1 > $2
+SLURM_JOB_ID="$(squeue -u $LOGNAME |grep $HOSTNAME | awk '{print $1}')"
+SCRATCH_DIR="/scratch/${USER}/job_${SLURM_JOB_ID}"
+mkdir -p "${SCRATCH_DIR}"
+
+output_path="${SCRATCH_DIR}/${$2}"
+gzip -dfc $1 > ${output_path}
 
 python3.9 -m venv .env
 source .env/bin/activate
 pip install --upgrade pip
 pip install -r requirements.txt
-python -W ignore semiscan.py $2 $3
+python -W ignore semiscan.py ${output_path} $3
