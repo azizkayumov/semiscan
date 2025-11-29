@@ -16,11 +16,11 @@ SLURM_JOB_ID="$(squeue -u $LOGNAME |grep $HOSTNAME | awk '{print $1}')"
 SCRATCH_DIR="/scratch/${USER}/job_${SLURM_JOB_ID}"
 mkdir -p "${SCRATCH_DIR}"
 
-output_path="${SCRATCH_DIR}/${$2}"
-gzip -dfc $1 > ${output_path}
+data_path="${SCRATCH_DIR}/${$2}"
+gzip -dfc $1 > ${data_path}
 
 python3.9 -m venv .env
 source .env/bin/activate
 pip install --upgrade pip
 pip install -r requirements.txt
-python -W ignore semiscan.py ${output_path} $3
+python -W ignore semiscan.py ${data_path} ${SCRATCH_DIR}
