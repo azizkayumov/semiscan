@@ -11,7 +11,7 @@
 #SBATCH --export=ALL
 #SBATCH -t 01:00:00
 
-gzip -d $1 > $2 || true
+gzip -dfc $1 > $2
 
 python3.9 -m venv .env
 source .env/bin/activate
