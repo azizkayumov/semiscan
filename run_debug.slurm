@@ -1,5 +1,6 @@
 #!/bin/bash -e
 #SBATCH --job-name="semiscan"
+#SBATCH --constraint="lustre"
 #SBATCH --partition=debug
 #SBATCH --account=sds193
 #SBATCH --nodes=1
@@ -13,7 +14,7 @@
 #SBATCH --mail-type=END,FAIL,TIME_LIMIT_80
 
 SLURM_JOB_ID="$(squeue -u $LOGNAME |grep $HOSTNAME | awk '{print $1}')"
-SCRATCH_DIR="/scratch/${USER}/job_${SLURM_JOB_ID}"
+SCRATCH_DIR="/expanse/lustre/scratch/${USER}/temp_project"
 mkdir -p "${SCRATCH_DIR}"
 
 data_path="${SCRATCH_DIR}/$2"
