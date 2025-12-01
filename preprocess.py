@@ -1,19 +1,30 @@
 import os
 import sys
-import numpy as np
 import time
-import subprocess
+import dpkt
 
 def pcap_to_csv(pcap_path, csv_path):
     filesize = os.path.getsize(pcap_path)
     print(f'\n   => processing pcap: {pcap_path} ({filesize / (1024 * 1024):.2f} MB)')
     # pcap -> csv
     now = time.time()
-
-    # tshark -r input.pcap -T fields -e frame.time -e ip.src -e tcp.dstport -E separator=, > output.csv
-    command = f'tshark -r {pcap_path} -Y "tcp" -T fields -e frame.time -e ip.src -e tcp.dstport -E separator=, > {csv_path}'
-    subprocess.run(command, shell=True)
-    
+    rows = []
+    with open(pcap_path, 'rb') as f:
+        csv_file = open(csv_path, 'w')
+        reader = dpkt.pcap.Reader(f)
+        for ts, buf in reader:
+            # Process packet (ts is timestamp, buf is raw packet data)
+            eth = dpkt.ethernet.Ethernet(buf)
+            if not isinstance(eth.data, dpkt.ip.IP):
+                continue
+            ip = eth.data
+            if not isinstance(ip.data, dpkt.tcp.TCP):
+                continue
+            tcp = ip.data
+            src_ip = '%d.%d.%d.%d' % tuple(map(int, ip.src))
+            dst_port = tcp.dport
+            csv_file.write(f'{ts},{src_ip},{dst_port}\n')
+        csv_file.close()
     print(f'      csv saved at {csv_path} (took {time.time() - now:.2f} seconds)')
 
 def csv_to_ports(csvpath, vectorspath):
