@@ -24,7 +24,8 @@ class MyCorpus:
 
 def train_word2vec_model(ports_path, trained_model_path=""):
     sentences = MyCorpus(ports_path)
-    print(f'\n   => training w2v model on {ports_path}...')
+    filesize = os.path.getsize(ports_path)
+    print(f'\n   => training w2v model on {ports_path} ({filesize / (1024 * 1024):.2f} MB)')
 
     # Create the Word2Vec model (if it exists, load it)
     if os.path.exists(trained_model_path):
@@ -44,7 +45,9 @@ def train_word2vec_model(ports_path, trained_model_path=""):
     model_path = ports_path.replace('.ports', '.model')
     os.makedirs(os.path.dirname(model_path), exist_ok=True)
     model.save(model_path)
-    print(f'      model saved at {model_path}')
+
+    modelsize = os.path.getsize(model_path)
+    print(f'      model saved at {model_path} ({modelsize / (1024 * 1024):.2f} MB)')
 
     # Save the keys
     keys = model.wv.key_to_index

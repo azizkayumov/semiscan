@@ -1,29 +1,34 @@
 import os
 import sys
 import numpy as np
-from scapy.all import rdpcap
-
+import time
+import subprocess
 
 def pcap_to_csv(pcap_path, csv_path):
-    print(f'\n   => processing pcap: {pcap_path}')
-    packets = rdpcap(pcap_path)
-    with open(csv_path, 'w') as f:
-        for packet in packets:
-            if packet.haslayer('IP') and packet.haslayer('TCP'):
-                src_ip = packet['IP'].src
-                dst_port = packet['TCP'].dport
-                timestamp = packet.time
-                f.write(f'{timestamp},{src_ip},{dst_port}\n')
-    print(f'      csv saved at {csv_path}')
+    filesize = os.path.getsize(pcap_path)
+    print(f'\n   => processing pcap: {pcap_path} ({filesize / (1024 * 1024):.2f} MB)')
+    # pcap -> csv
+    now = time.time()
 
+    # tshark -r input.pcap -T fields -e frame.time -e ip.src -e tcp.dstport -E separator=, > output.csv
+    command = f'tshark -r {pcap_path} -Y "tcp" -T fields -e frame.time -e ip.src -e tcp.dstport -E separator=, > {csv_path}'
+    subprocess.run(command, shell=True)
+    
+    print(f'      csv saved at {csv_path} (took {time.time() - now:.2f} seconds)')
 
 def csv_to_ports(csvpath, vectorspath):
-    print(f'\n   => processing csv: {csvpath}')
+    filesize = os.path.getsize(csvpath)
+    print(f'\n   => processing csv: {csvpath} ({filesize / (1024 * 1024):.2f} MB)')
     # csv -> port sequences
     scanners = {}
     with open(csvpath, 'r') as f:
         for line in f:
-            timestamp, src_ip, dst_port = line.strip().split(',')
+            if not line.strip():
+                continue
+            splits = line.strip().split(',')
+            if len(splits) != 3:
+                continue
+            timestamp, src_ip, dst_port = splits
             if src_ip not in scanners:
                 scanners[src_ip] = []
             scanners[src_ip].append(int(dst_port))
@@ -36,7 +41,8 @@ def csv_to_ports(csvpath, vectorspath):
 
 
 def deduplicate(vectors_path, output_path):
-    print(f'\n   => deduplicating vectors: {vectors_path}')
+    filesize = os.path.getsize(vectors_path)
+    print(f'\n   => processing vectors: {vectors_path} ({filesize / (1024 * 1024):.2f} MB)')
     seen = set()
     outfile = open(output_path, 'w')
     with open(vectors_path, 'r') as f:
