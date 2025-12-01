@@ -19,9 +19,6 @@ SCRATCH_DIR="/expanse/lustre/scratch/${USER}/temp_project"
 mkdir -p "${SCRATCH_DIR}"
 
 data_path="${SCRATCH_DIR}/$2"
-gzip -dfc $1 > ${data_path}
-
-dnf install wireshark-cli -y
 
 python3.9 -m venv .env
 source .env/bin/activate
