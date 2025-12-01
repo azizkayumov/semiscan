@@ -8,7 +8,7 @@
 #SBATCH --cpus-per-task=8
 #SBATCH --mem-per-cpu=1000
 #SBATCH --time=00:10:00
-#SBATCH --output=".results/joblogs/semiscan-%A_%a.out"
+#SBATCH --output="joblogs/semiscan-%A_%a.out"
 #SBATCH --mail-user=kayumovabduaziz@gmail.com
 #SBATCH --mail-type=END,FAIL,TIME_LIMIT_80
 
