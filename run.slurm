@@ -17,7 +17,7 @@ SLURM_JOB_ID="$(squeue -u $LOGNAME |grep $HOSTNAME | awk '{print $1}')"
 SCRATCH_DIR="/scratch/${USER}/job_${SLURM_JOB_ID}"
 mkdir -p "${SCRATCH_DIR}"
 
-data_path="${SCRATCH_DIR}/${$2}"
+data_path="${SCRATCH_DIR}/$2"
 gzip -dfc $1 > ${data_path}
 
 python3.9 -m venv .env
