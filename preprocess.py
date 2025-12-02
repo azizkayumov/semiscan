@@ -61,6 +61,7 @@ def deduplicate(vectors_path, output_path):
     print(f'\n   => processing vectors: {vectors_path} ({filesize / (1024 * 1024):.2f} MB)')
     seen = set()
     outfile = open(output_path, 'w')
+    now = time.time()
     with open(vectors_path, 'r') as f:
         for line in f:
             line = line.strip().split(',')
@@ -71,6 +72,5 @@ def deduplicate(vectors_path, output_path):
             seen.add(vector)
             outfile.write(f'{label},{vector}\n')
     print(f'      number of unique vectors: {len(seen)}')
-    print(f'      deduplicated vectors saved at {output_path}')
+    print(f'      deduplicated vectors saved at {output_path} (took {time.time() - now:.2f} seconds)')
     outfile.close()
-    

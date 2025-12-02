@@ -1,5 +1,6 @@
 import os
 import sys
+import time
 import numpy as np
 from gensim.test.utils import datapath
 from gensim import utils
@@ -26,6 +27,7 @@ def train_word2vec_model(ports_path, trained_model_path=""):
     sentences = MyCorpus(ports_path)
     filesize = os.path.getsize(ports_path)
     print(f'\n   => training w2v model on {ports_path} ({filesize / (1024 * 1024):.2f} MB)')
+    now = time.time()
 
     # Create the Word2Vec model (if it exists, load it)
     if os.path.exists(trained_model_path):
@@ -60,12 +62,13 @@ def train_word2vec_model(ports_path, trained_model_path=""):
             vector = np.round(vec, 6)
             row = f'{key},' + ','.join([str(v) for v in vector])
             f.write(f'{row}\n')
-    print(f'      keys saved at {keys_path}')
+    print(f'      keys saved at {keys_path} (took {time.time() - now:.2f} seconds)')
 
 def scanner_to_vectors(ports_path, keys_path, labels_folder, output_path):
     port_to_vectors = load_keys(keys_path)
     scanner_labels = load_labels(labels_folder)
     print(f'      converting scanners to vectors: {ports_path}')
+    now = time.time()
 
     outfile = open(output_path, 'w')
     with open(ports_path, 'r') as f:
@@ -84,7 +87,7 @@ def scanner_to_vectors(ports_path, keys_path, labels_folder, output_path):
             vectors_str = ','.join(map(str, vector))
             outfile.write(f'{ip_src_32},{label},{vectors_str}\n')
 
-    print(f'      scanner vectors saved at {output_path}')
+    print(f'      scanner vectors saved at {output_path} (took {time.time() - now:.2f} seconds)')
     outfile.close()
 
 def load_keys(keys_path):

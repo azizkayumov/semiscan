@@ -1,11 +1,13 @@
 import os
 import sys
+import time
 import numpy as np
 from fast_hdbscan import HDBSCAN
 
 
 def cluster_data(datapath):
     print(f'\n   => clustering data: {datapath}')
+    now = time.time()
 
     # load data
     X = np.genfromtxt(datapath, delimiter=",", dtype=str)
@@ -62,5 +64,5 @@ def cluster_data(datapath):
             os.makedirs(os.path.dirname(cluster_file_path), exist_ok=True)
             with open(cluster_file_path, 'a') as cf:
                 cf.write(f'{ipsrc},{label}\n')
-    print(f'      cluster files saved to {os.path.join(folder, "clusters/")}')
+    print(f'      cluster files saved to {os.path.join(folder, "clusters/")} (took {time.time() - now:.2f} seconds)')
 
