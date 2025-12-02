@@ -6,9 +6,13 @@ import dpkt
 def pcap_to_csv(pcap_path, csv_path):
     filesize = os.path.getsize(pcap_path)
     print(f'\n   => processing pcap: {pcap_path} ({filesize / (1024 * 1024):.2f} MB)')
+    # skip if csv already exists and not empty
+    if os.path.exists(csv_path) and os.path.getsize(csv_path) > 0:
+        print(f'      csv already exists at {csv_path}, skipping...')
+        return
+    
     # pcap -> csv
     now = time.time()
-    rows = []
     with open(pcap_path, 'rb') as f:
         csv_file = open(csv_path, 'w')
         reader = dpkt.pcap.Reader(f)
@@ -27,11 +31,12 @@ def pcap_to_csv(pcap_path, csv_path):
         csv_file.close()
     print(f'      csv saved at {csv_path} (took {time.time() - now:.2f} seconds)')
 
-def csv_to_ports(csvpath, vectorspath):
+def csv_to_ports(csvpath, portspath):
     filesize = os.path.getsize(csvpath)
     print(f'\n   => processing csv: {csvpath} ({filesize / (1024 * 1024):.2f} MB)')
     # csv -> port sequences
     scanners = {}
+    now = time.time()
     with open(csvpath, 'r') as f:
         for line in f:
             if not line.strip():
@@ -45,10 +50,10 @@ def csv_to_ports(csvpath, vectorspath):
             scanners[src_ip].append(int(dst_port))
 
     # save port sequences to output folder
-    with open(vectorspath, 'w') as f:
+    with open(portspath, 'w') as f:
         for src_ip, ports in scanners.items():
             f.write(f'{src_ip},{",".join(map(str, ports))}\n')
-    print(f'      port sequences saved at {vectorspath}')
+    print(f'      port sequences saved at {portspath} (took {time.time() - now:.2f} seconds)')
 
 
 def deduplicate(vectors_path, output_path):
