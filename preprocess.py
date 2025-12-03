@@ -6,6 +6,7 @@ import dpkt
 def pcap_to_csv(pcap_path, csv_path):
     filesize = os.path.getsize(pcap_path)
     print(f'\n   => processing pcap: {pcap_path} ({filesize / (1024 * 1024):.2f} MB)')
+
     # skip if csv already exists and not empty
     if os.path.exists(csv_path) and os.path.getsize(csv_path) > 0:
         print(f'      csv already exists at {csv_path}, skipping...')
@@ -34,6 +35,12 @@ def pcap_to_csv(pcap_path, csv_path):
 def csv_to_ports(csvpath, portspath):
     filesize = os.path.getsize(csvpath)
     print(f'\n   => processing csv: {csvpath} ({filesize / (1024 * 1024):.2f} MB)')
+    
+    # skip if csv already exists and not empty
+    if os.path.exists(portspath) and os.path.getsize(portspath) > 0:
+        print(f'      ports already exists at {portspath}, skipping...')
+        return
+
     # csv -> port sequences
     scanners = {}
     now = time.time()
@@ -59,6 +66,7 @@ def csv_to_ports(csvpath, portspath):
 def deduplicate(vectors_path, output_path):
     filesize = os.path.getsize(vectors_path)
     print(f'\n   => processing vectors: {vectors_path} ({filesize / (1024 * 1024):.2f} MB)')
+    
     seen = set()
     outfile = open(output_path, 'w')
     now = time.time()

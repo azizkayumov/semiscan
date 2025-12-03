@@ -10,7 +10,7 @@
 #SBATCH --cpus-per-task=128
 #SBATCH --mem=0
 #SBATCH --export=ALL
-#SBATCH -t 40:00:00
+#SBATCH -t 24:00:00
 #SBATCH --mail-user=kayumovabduaziz@gmail.com
 #SBATCH --mail-type=END,FAIL,TIME_LIMIT_80
 

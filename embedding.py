@@ -29,6 +29,12 @@ def train_word2vec_model(ports_path, trained_model_path=""):
     print(f'\n   => training w2v model on {ports_path} ({filesize / (1024 * 1024):.2f} MB)')
     now = time.time()
 
+    # skip if csv already exists and not empty
+    model_path = ports_path.replace('.ports', '.model')
+    if os.path.exists(model_path) and os.path.getsize(model_path) > 0:
+        print(f'      trained model already exists at {model_path}, skipping...')
+        return
+
     # Create the Word2Vec model (if it exists, load it)
     if os.path.exists(trained_model_path):
         print(f'      loading model from {trained_model_path}...')
@@ -44,7 +50,6 @@ def train_word2vec_model(ports_path, trained_model_path=""):
     model.train(sentences, total_examples=model.corpus_count, epochs=10)
 
     # Save the model
-    model_path = ports_path.replace('.ports', '.model')
     os.makedirs(os.path.dirname(model_path), exist_ok=True)
     model.save(model_path)
 
